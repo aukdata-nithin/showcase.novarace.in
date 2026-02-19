@@ -1,0 +1,11 @@
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rect -->
+  <rect x="15" y="15" width="970" height="970" stroke="#ff4d00" stroke-width="30" />
+  <!-- Corners -->
+  <path d="M0 70 V0 H70" stroke="#ff4d00" stroke-width="75" stroke-linecap="square" />
+  <path d="M930 0 H1000 V70" stroke="#ff4d00" stroke-width="75" stroke-linecap="square" />
+  <path d="M1000 930 V1000 H930" stroke="#ff4d00" stroke-width="75" stroke-linecap="square" />
+  <path d="M70 1000 H0 V930" stroke="#ff4d00" stroke-width="75" stroke-linecap="square" />
+  <!-- Band -->
+  <rect y="900" width="1000" height="100" fill="#ff4d00" fill-opacity="0.87" />
+</svg>
