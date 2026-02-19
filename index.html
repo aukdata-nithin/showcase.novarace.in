@@ -262,14 +262,18 @@
         // ─── App ──────────────────────────────────────────────────────────────────────
         function App() {
             // URL slug parsing logic
+            // const getEventFromUrl = () => {
+            //     const path = window.location.pathname;
+            //     const slug = path.split("/").pop(); // Simple extraction, e.g. /bangalore-ultra-2025 -> bangalore-ultra-2025
+            //     // Handle encoded URI components if necessary, though simple slugs are usually safe
+            //     const decodedSlug = decodeURIComponent(slug);
+            //     return EVENTS.find(e => e.slug === decodedSlug) || EVENTS[0];
+            // };
             const getEventFromUrl = () => {
-                const path = window.location.pathname;
-                const slug = path.split("/").pop(); // Simple extraction, e.g. /bangalore-ultra-2025 -> bangalore-ultra-2025
-                // Handle encoded URI components if necessary, though simple slugs are usually safe
-                const decodedSlug = decodeURIComponent(slug);
+                const hash = window.location.hash.replace("#", "");
+                const decodedSlug = decodeURIComponent(hash);
                 return EVENTS.find(e => e.slug === decodedSlug) || EVENTS[0];
             };
-
             const initialEvent = getEventFromUrl();
             const [selectedEventId, setSelectedEventId] = useState(initialEvent.id);
             const [photo, setPhoto] = useState(null);
