@@ -25,7 +25,7 @@
         // ─── Mock Events ─────────────────────────────────────────────────────────────
         const EVENTS = [
             {
-                id: "evt001", slug: "bangalore-ultra-2025", name: "Bangalore Ultra 2025", date: "Feb 23, 2025",
+                id: "evt001", slug: "bangalore-ultra-2025", name: "Bangalore Ultra 2025", date: "Feb 23, 2025", hashTag: "#BangaloreUltra2025",
                 frames: [
                     { id: "f1", name: "Finisher", src: "assets/bangalore-ultra-2025/frame_1.svg" },
                     { id: "f2", name: "10K Glory", src: "assets/bangalore-ultra-2025/frame_2.svg" },
@@ -34,14 +34,14 @@
                 ]
             },
             {
-                id: "evt002", slug: "sivagiri-marathon-2025", name: "Sivagiri Marathon 2025", date: "Mar 15, 2025",
+                id: "evt002", slug: "sivagiri-marathon-2025", name: "Sivagiri Marathon 2025", date: "Mar 15, 2025", hashTag: "#SivagiriMarathon2025",
                 frames: [
                     { id: "f5", name: "5K Spark", src: "assets/sivagiri-marathon-2025/frame_5.svg" },
                     { id: "f6", name: "10K Rise", src: "assets/sivagiri-marathon-2025/frame_6.svg" },
                 ]
             },
             {
-                id: "evt003", slug: "sooriya-saree-walkathon-2026", name: "Sooriya Saree Walkathon 2026", date: "Mar 15, 2025",
+                id: "evt003", slug: "sooriya-saree-walkathon-2026", name: "Sooriya Saree Walkathon 2026", date: "Mar 15, 2025", hashTag: "#nellaimarathon #SooriyaSareeWalkathon2026",
                 frames: [
                     { id: "f7", name: "", src: "assets/sooriya-saree-walkathon-2026/Nellai_Marathon_transparent.png" },
                 ]
@@ -343,7 +343,8 @@
             };
 
             const shareText = (platform) => {
-                const text = encodeURIComponent(`I'm running ${event.name}! 🏃‍♂️🏅 #NovaRace #${event.name.replace(/\s+/g, "")}`);
+                const tag = event.hashTag || `#NovaRace #${event.name.replace(/\s+/g, "")}`;
+                const text = encodeURIComponent(`I'm running ${event.name}! 🏃‍♂️🏅 ${tag}`);
                 const url = encodeURIComponent(window.location.href);
                 if (platform === "instagram") { download(); showToast("📸 Downloaded! Open Instagram & share from gallery", "info"); return; }
                 const links = {
@@ -595,7 +596,7 @@
                                     <p>2️⃣ Tap <strong style={{ color: "var(--nr-white)" }}>✋ Move Photo</strong> then <strong style={{ color: "var(--nr-white)" }}>drag</strong> to position yourself perfectly inside the frame.</p><br />
                                     <p>3️⃣ Use the <strong style={{ color: "var(--nr-white)" }}>🔍 Zoom</strong> tab to zoom in/out. Pinch with two fingers on mobile!</p><br />
                                     <p>4️⃣ Pick a <strong style={{ color: "var(--nr-orange)" }}>race frame</strong> on the right, then Download or Share.</p><br />
-                                    <p>🏅 Tag <strong style={{ color: "var(--nr-orange)" }}>#NovaRace</strong> to be featured on our wall!</p>
+                                    <p>🏅 Tag <strong style={{ color: "var(--nr-orange)" }}>{event.hashTag || "#NovaRace"}</strong> to be featured on our wall!</p>
                                 </div>
                             </div>
                         </div>
