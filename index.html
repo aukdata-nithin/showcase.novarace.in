@@ -345,26 +345,143 @@
             const shareNative = async () => {
                 const cv = canvasRef.current; if (!cv) return;
                 if (!navigator.share) { download(); showToast("⬇️ Downloaded – share from your gallery!", "info"); return; }
-                cv.toBlob(async blob => {
-                    const f = new File([blob], "novarace.jpg", { type: "image/jpeg" });
-                    try { await navigator.share({ title: `I'm running ${event.name}! 🏃`, text: `See you at the finish line 🏅 #NovaRace`, files: [f] }); showToast("🎉 Shared!", "success"); }
-                    catch { download(); }
-                }, "image/jpeg", 0.92);
+
+                try {
+                    const dataUrl = cv.toDataURL("image/jpeg", 0.92);
+                    const arr = dataUrl.split(',');
+                    const mime = arr[0].match(/:(.*?);/)[1];
+                    const bstr = atob(arr[1]);
+                    let n = bstr.length;
+                    const u8arr = new Uint8Array(n);
+                    while (n--) {
+                        u8arr[n] = bstr.charCodeAt(n);
+                    }
+                    const f = new File([u8arr], "novarace.jpg", { type: mime });
+
+                    if (navigator.canShare && navigator.canShare({ files: [f] })) {
+                        await navigator.share({
+                            title: `I'm running ${event.name}! 🏃`,
+                            text: `See you at the finish line 🏅 #NovaRace`,
+                            files: [f]
+                        });
+                        showToast("🎉 Shared!", "success");
+                    } else {
+                        await navigator.share({
+                            title: `I'm running ${event.name}! 🏃`,
+                            text: `See you at the finish line 🏅 #NovaRace`,
+                        });
+                        download();
+                    }
+                } catch (e) {
+                    console.error("Share failed", e);
+                    if (e.name !== 'AbortError') {
+                        download();
+                    }
+                }
             };
 
-            const shareText = (platform) => {
+            const shareText = async (platform) => {
+                const cv = canvasRef.current;
+                if (!cv) return;
+
                 const tag = event.hashTag || `#NovaRace #${event.name.replace(/\s+/g, "")}`;
-                const text = encodeURIComponent(`I'm running ${event.name}! 🏃‍♂️🏅 ${tag}`);
-                const url = encodeURIComponent(window.location.href);
-                if (platform === "instagram") { download(); showToast("📸 Downloaded! Open Instagram & share from gallery", "info"); return; }
-                const links = {
-                    whatsapp: `https://api.whatsapp.com/send?text=${text}%20${url}`,
-                    twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
-                    facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`,
-                };
-                if (links[platform]) window.open(links[platform], "_blank");
-            };
+                const shareMessage = `I'm running ${event.name}! 🏃‍♂️🏅 ${tag}`;
 
+                // Helper: convert canvas to a File object
+                const getImageFile = () => new Promise((resolve) => {
+                    cv.toBlob((blob) => {
+                        resolve(new File([blob], "novarace.jpg", { type: "image/jpeg" }));
+                    }, "image/jpeg", 0.92);
+                });
+
+                // Helper: download the image silently
+                const triggerDownload = () => {
+                    const a = document.createElement("a");
+                    a.download = `novarace-${event.name.replace(/\s+/g, "-")}.jpg`;
+                    a.href = cv.toDataURL("image/jpeg", 0.92);
+                    a.click();
+                };
+
+                // ── WhatsApp ──
+                if (platform === "whatsapp") {
+                    if (navigator.share && navigator.canShare) {
+                        try {
+                            const file = await getImageFile();
+                            if (navigator.canShare({ files: [file] })) {
+                                await navigator.share({
+                                    title: `I'm running ${event.name}! 🏃`,
+                                    text: shareMessage,
+                                    files: [file],
+                                });
+                                showToast("🎉 Shared to WhatsApp!", "success");
+                                return;
+                            }
+                        } catch (e) {
+                            if (e.name === "AbortError") return;
+                        }
+                    }
+                    // Fallback: download + open WhatsApp with text
+                    triggerDownload();
+                    showToast("📸 Photo saved! Paste it in WhatsApp.", "info");
+                    setTimeout(() => {
+                        window.open(
+                            `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`,
+                            "_blank"
+                        );
+                    }, 600);
+                    return;
+                }
+
+                // ── Instagram ──
+                if (platform === "instagram") {
+                    if (navigator.share && navigator.canShare) {
+                        try {
+                            const file = await getImageFile();
+                            if (navigator.canShare({ files: [file] })) {
+                                await navigator.share({
+                                    title: `I'm running ${event.name}! 🏃`,
+                                    text: shareMessage,
+                                    files: [file],
+                                });
+                                showToast("🎉 Shared!", "success");
+                                return;
+                            }
+                        } catch (e) {
+                            if (e.name === "AbortError") return;
+                        }
+                    }
+                    // Fallback
+                    triggerDownload();
+                    showToast("📸 Saved! Open Instagram → New Post → attach photo.", "info");
+                    return;
+                }
+
+                // ── Twitter / X ──
+                if (platform === "twitter") {
+                    triggerDownload();
+                    showToast("📸 Photo saved! Attach it to your tweet.", "info");
+                    setTimeout(() => {
+                        window.open(
+                            `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`,
+                            "_blank"
+                        );
+                    }, 700);
+                    return;
+                }
+
+                // ── Facebook ──
+                if (platform === "facebook") {
+                    triggerDownload();
+                    showToast("📸 Photo saved! Attach it to your Facebook post.", "info");
+                    setTimeout(() => {
+                        window.open(
+                            `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(shareMessage)}`,
+                            "_blank"
+                        );
+                    }, 700);
+                    return;
+                }
+            };
             useEffect(() => {
                 setSelectedFrame(event?.frames?.[0] ?? null);
                 setPs(DEFAULT_PS);
@@ -530,19 +647,6 @@
                             )}
 
                             {/* Social share */}
-                            {photo && (
-                                <div className="panel" style={{ marginTop: 14 }}>
-                                    <div className="panel-header">📲 Share to Social</div>
-                                    <div className="panel-body">
-                                        <div className="share-row">
-                                            <button className="share-btn share-wa" onClick={() => shareText("whatsapp")}>💬 WhatsApp</button>
-                                            <button className="share-btn share-ig" onClick={() => shareText("instagram")}>📸 Instagram</button>
-                                            <button className="share-btn share-tw" onClick={() => shareText("twitter")}>𝕏 Twitter</button>
-                                            <button className="share-btn share-fb" onClick={() => shareText("facebook")}>Facebook</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </div>
 
                         {/* ─── Sidebar ─── */}
