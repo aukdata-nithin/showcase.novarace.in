@@ -51,7 +51,7 @@
                 ]
             },
             {
-                id: "evt003", slug: "sooriya-saree-walkathon-2026", name: "Sooriya Saree Walkathon 2026", date: "Mar 15, 2025", hashTag: "#nellaimarathon #SooriyaSareeWalkathon2026",
+                id: "evt003", slug: "sooriya-saree-walkathon-2026", name: "Sooriya Saree Walkathon 2026", date: "Mar 15, 2025", hashTag: "I'm participating in the Sooriya Saree Walkathon 2026, Nellai \n🥻 Registrations are open — join with me!\n👉 showcase.novarace.in/#sooriya-saree-walkathon-2026\n\n#nellaimarathon#SooriyaSareeWalkathon 2026\n",
                 frames: [
                     { id: "f7", name: "", src: "assets/sooriya-saree-walkathon-2026/Nellai_Marathon_transparent.png" },
                 ]
@@ -360,15 +360,15 @@
 
                     if (navigator.canShare && navigator.canShare({ files: [f] })) {
                         await navigator.share({
-                            title: `I'm running ${event.name}! 🏃`,
-                            text: `See you at the finish line 🏅 #NovaRace`,
+                            title: event.name,
+                            text: `${event.hashTag || '#NovaRace'}`,
                             files: [f]
                         });
                         showToast("🎉 Shared!", "success");
                     } else {
                         await navigator.share({
-                            title: `I'm running ${event.name}! 🏃`,
-                            text: `See you at the finish line 🏅 #NovaRace`,
+                            title: event.name,
+                            text: `${event.hashTag || '#NovaRace'}`,
                         });
                         download();
                     }
@@ -385,7 +385,7 @@
                 if (!cv) return;
 
                 const tag = event.hashTag || `#NovaRace #${event.name.replace(/\s+/g, "")}`;
-                const shareMessage = `I'm running ${event.name}! 🏃‍♂️🏅 ${tag}`;
+                const shareMessage = `I'm running ${event.name}! 🏃‍♂️ See you at the finish line 🏅 ${tag}`;
 
                 // Helper: convert canvas to a File object
                 const getImageFile = () => new Promise((resolve) => {
