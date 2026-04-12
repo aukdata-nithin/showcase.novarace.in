@@ -31,8 +31,6 @@
 
     <script type="text/babel">
         const { useState, useRef, useEffect, useCallback } = React;
-
-        // ─── Mock Events ─────────────────────────────────────────────────────────────
         const EVENTS = [
             {
                 id: "evt001", slug: "bangalore-ultra-2025", name: "Bangalore Ultra 2025", date: "Feb 23, 2025", hashTag: "#BangaloreUltra2025",
@@ -54,6 +52,11 @@
                 id: "evt003", slug: "sooriya-saree-walkathon-2026", name: "Sooriya Saree Walkathon 2026", date: "Mar 15, 2025", hashTag: "I'm participating in the Sooriya Saree Walkathon 2026, Nellai \n🥻 Registrations are open — join with me!\n👉 https://www.novarace.in/events/sooriya-saree-walkathon-2026\n\n#nellaimarathon #SooriyaSareeWalkathon2026\n",
                 frames: [
                     { id: "f7", name: "", src: "assets/sooriya-saree-walkathon-2026/Nellai_Marathon_transparent.png" },
+                ]
+            }, {
+                id: "evt004", slug: "sivagiri-marathon-2026", name: "Sivagiri Marathon 2026", date: "June 21, 2026", hashTag: "I'm participating in the Sivagiri Marathon 2026\n🥻 Registrations are open — join with me!\n👉 https://www.sivagirimarathon.in/\n\n#sivagirimarathon #SivagiriMarathon2026\n",
+                frames: [
+                    { id: "f7", name: "", src: "assets/sivagiri-marathon-2026/frame.png" },
                 ]
             },
         ];
@@ -501,7 +504,7 @@
                     {toast && <Toast {...toast} onDone={() => setToast(null)} />}
 
                     <nav>
-                        <div className="logo">NOVA<span>RACE</span></div>
+                        <img src="RGB%20logo%20without%20icons.png" alt="NovaRace Logo" style={{ height: "60px", width: "auto" }} />
                         <span className="badge">Frame Studio</span>
                     </nav>
 
